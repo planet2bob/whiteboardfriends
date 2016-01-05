@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="578" height="200"></canvas>
+    <script>
+
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+
+      var mouseIsDown = false;
+
+      window.addEventListener('resize', resizeCanvas, false);
+
+      function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                //DO DRAWING IN HERE
+        }
+        resizeCanvas();
+
+      function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
+
+      function displayData(data){
+        // context.fillStyle = 
+        for(var i = 0; i < data.length; i++){
+          var currCoord = data[i]
+          context.fillRect(currCoord[0], currCoord[1], 5, 5);
+        }
+      }
+      
+      canvas.addEventListener("mousedown", function(evt){
+        mouseIsDown = true;
+      }, false);
+      canvas.addEventListener("mouseup", function(evt){
+        mouseIsDown = false;
+      }, false);
+
+      canvas.addEventListener('mousemove', function(evt) {
+        var mousePos = getMousePos(canvas, evt);
+
+        if(mouseIsDown){
+          console.log(mousePos);
+          $.getJSON('/update', {
+            x: mousePos.x,
+            y: mousePos.y
+          }, function(data) {
+            //RESPONSE FROM AJAX
+            displayData(data.result);
+          });
+        }
+      },false);
+
+      window.setInterval(function(){
+        $.getJSON('/get', {}, function(data) {
+            //RESPONSE FROM AJAX
+            displayData(data.result);
+          });
+      }, 500);
+    </script>
+  </body>
+</html>
