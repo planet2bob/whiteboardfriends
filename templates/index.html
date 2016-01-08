@@ -1,6 +1,54 @@
-`
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  
+    <style>
+      .redButton {
+      background-color:#ef261b;
+      -moz-border-radius:28px;
+      -webkit-border-radius:28px;
+      border-radius:28px;
+      border:1px solid #5c585c;
+      display:inline-block;
+      cursor:pointer;
+      color:#ffffff;
+      font-family:Trebuchet MS;
+      font-size:17px;
+      padding:12px 8px;
+      text-decoration:none;
+    }
+    .redButton:hover {
+      background-color:#E89294;
+    }
+    .redButton:active {
+      position:relative;
+      top:1px;
+    }
+
+    .blueButton {
+  background-color:#00a6ed;
+  -moz-border-radius:28px;
+  -webkit-border-radius:28px;
+  border-radius:28px;
+  border:1px solid #5c585c;
+  display:inline-block;
+  cursor:pointer;
+  color:#ffffff;
+  font-family:Trebuchet MS;
+  font-size:17px;
+  padding:12px 5px;
+  text-decoration:none;
+}
+.blueButton:hover {
+  background-color:#c0e1ed;
+}
+.blueButton:active {
+  position:relative;
+  top:1px;
+}
+
+    </style>
+    
+
 </head>
 
 <h1>Whiteboard Friends</h1>
@@ -12,10 +60,9 @@
 <br><br>
 -->
 
-<button class = ".btn" type="button" style="background-color:red;margin-left:auto;margin-right:auto;"> <input id="red" type="button" value="red"> </button>
+<a href="#" class="redButton" id="red" type="button" value="red">Red</a>
 
-<button type="button" style="background-color:blue;margin-left:auto;margin-right:auto;"> <input id="blue" type="button" value="blue"> </button>
-
+<a href="#" class="blueButton" id="blue" type="button" value="blue">Blue</a>
 
 
 <input id="eraser" type="button" value="eraser">
@@ -23,6 +70,7 @@
 <label for="fader">Pen Size</label>
 <input type="range" min="1" max="10" value="5" id="fader" step=".5" oninput="outputUpdate(value)">
 <output for="fader" id="size">5</output>
+<input id="clear" type="button" value="clear">
 <br><br>
 
 
@@ -30,8 +78,6 @@
 
 <canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;">
 </canvas>
-<br> <input id="clear" type="button" value="clear">
-
 
 
 
@@ -62,6 +108,14 @@
       document.querySelector('#size').value = vol;
       pSize = vol; 
     }
+
+    function resizeCanvas() {
+          var rect = canvas.getBoundingClientRect();
+          canvas.width = window.innerWidth*.98;
+          canvas.height = window.innerHeight*.99 - rect.top;
+          //DO DRAWING IN HERE
+    }
+    resizeCanvas();
 
 
     function displayData(xvals, yvals, color, size){
@@ -191,15 +245,17 @@
 
       canvas.addEventListener('mouseup', function(evt){ 
         mouseIsDown = false;
-      }, false);
-
-      window.setInterval(function(){
         sendData(xcache, ycache, colorcache, sizecache);
         xcache = [];
         ycache = [];
         colorcache = [];
         sizecache = [];
-      }, 500);
+      }, false);
+      window.addEventListener('resize', resizeCanvas, false);
+      window.setInterval(function(){
+        sendData(xcache, ycache, colorcache, sizecache);
+      }, 3000);
+      sendData(xcache, ycache, colorcache, sizecache);
 
 </script>
 
