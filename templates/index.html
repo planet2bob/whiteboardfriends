@@ -212,11 +212,14 @@
     function getMousePos(canvas, evt) {
 
         var rect = canvas.getBoundingClientRect();
-        if(mouseIsDown && !pixelDrawn(evt.clientX - rect.left, evt.clientY - rect.top, currColor, pSize)){
+        var x = Math.floor((evt.clientX - rect.left)*2)/2
+        var y = Math.floor((evt.clientY - rect.top)*2)/2
+
+        if(mouseIsDown && !pixelDrawn(x, y, currColor, pSize)){
           colorcache.push(currColor);
           sizecache.push(pSize);
-          xcache.push(evt.clientX - rect.left);
-          ycache.push(evt.clientY - rect.top);
+          xcache.push(x);
+          ycache.push(y);
         }
 
       }
