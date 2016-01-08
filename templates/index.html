@@ -252,10 +252,10 @@
         sizecache = [];
       }, false);
       window.addEventListener('resize', resizeCanvas, false);
-      // window.setInterval(function(){
-      //   sendData(xcache, ycache, colorcache, sizecache);
-      // }, 3000);
-      sendData(xcache, ycache, colorcache, sizecache);
+      window.setInterval(function(){
+        sendData(xcache, ycache, colorcache, sizecache);
+      }, 100);
+      // sendData(xcache, ycache, colorcache, sizecache);
 
 </script>
 
