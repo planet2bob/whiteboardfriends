@@ -200,10 +200,19 @@
           });
   }
 
+    function pixelDrawn(x, y, c, s){
+      for(var i = 0; i < xcache.length; i++){
+        if(xcache[i] == x && ycache[i] == y && colorcache[i] == c && sizecache[i] == s){
+          return true;
+        }
+      }
+      return false;
+    }
+
     function getMousePos(canvas, evt) {
 
         var rect = canvas.getBoundingClientRect();
-        if(mouseIsDown){
+        if(mouseIsDown && !pixelDrawn(evt.clientX - rect.left, evt.clientY - rect.top, currColor, pSize)){
           colorcache.push(currColor);
           sizecache.push(pSize);
           xcache.push(evt.clientX - rect.left);
