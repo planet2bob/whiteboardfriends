@@ -212,8 +212,8 @@
     function getMousePos(canvas, evt) {
 
         var rect = canvas.getBoundingClientRect();
-        var x = Math.floor((evt.clientX - rect.left)*2)/2
-        var y = Math.floor((evt.clientY - rect.top)*2)/2
+        var x = Math.floor((evt.clientX - rect.left)/5)*5
+        var y = Math.floor((evt.clientY - rect.top)/5)*5
 
         if(mouseIsDown && !pixelDrawn(x, y, currColor, pSize)){
           colorcache.push(currColor);
