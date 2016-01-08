@@ -3,30 +3,42 @@ import json, os
 
 app = Flask(__name__)
 
-def readJson(filename):
-    jsonText = open(filename, 'r').read()
-    return json.loads(jsonText)
-
-def updateCoords(x, y):
-    currDat = readJson('data.json')
-    currDat.append((x,y))
-    newJson = json.dumps(currDat)
-    open('data.json', 'w').write(newJson)
-
 @app.route("/")
 def hello():
-    return render_template("index.html")
+    return render_template('index.html')
 
-@app.route("/update", methods=['GET','POST'])
-def updateData():
-    x = request.values.get("x", "")
-    y = request.values.get("y", "")
-    updateCoords(x,y)
-    return jsonify(result=readJson('data.json'))
+@app.route("/coords", methods=['GET','POST'])
+def helloname():
 
-@app.route("/get", methods=['GET','POST'])
-def getData():
-    return jsonify(result=readJson('data.json'))
+    x = json.loads(request.values.get("xarr", ""))
+    y = json.loads(request.values.get("yarr", ""))
+    color = json.loads(request.values.get("colorarr", ""))
+    size = json.loads(request.values.get("sizearr", ""))
+
+    currJsonText = open('data.json', 'r').read()
+    currJsonData = json.loads(currJsonText)
+    currJsonData['x'].extend(x)
+    currJsonData['y'].extend(y)
+    currJsonData['color'].extend(color)
+    currJsonData['size'].extend(size)
+    
+    open('data.json', 'w').write(json.dumps(currJsonData))
+
+    return jsonify(result=open('data.json', 'r').read())
+
+@app.route("/clear", methods=['GET','POST'])
+def clear():
+
+    currJsonText = open('data.json', 'r').read()
+    currJsonData = json.loads(currJsonText)
+    currJsonData['x'] = []
+    currJsonData['y'] = []
+    currJsonData['size'] = []
+    currJsonData['color'] = []
+    open('data.json', 'w').write(json.dumps(currJsonData))
+
+    return jsonify(result=open('data.json', 'r').read())
+
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 33507))

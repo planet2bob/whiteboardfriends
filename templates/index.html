@@ -1,76 +1,210 @@
-<!DOCTYPE HTML>
-<html>
-  <head>
-    <style>
-      body {
-        margin: 0px;
-        padding: 0px;
-      }
-    </style>
+`
+<head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  </head>
-  <body>
-    <canvas id="myCanvas" width="578" height="200"></canvas>
-    <script>
+</head>
 
-      var canvas = document.getElementById('myCanvas');
-      var context = canvas.getContext('2d');
+<h1>Whiteboard Friends</h1>
 
-      var mouseIsDown = false;
+<!--
+<input id="x" type="text" placeholder="x">
+<input id="y" type="text" placeholder="y">
+<input id ="submit" type="button" value="submit">
+<br><br>
+-->
 
-      window.addEventListener('resize', resizeCanvas, false);
+<button class = ".btn" type="button" style="background-color:red;margin-left:auto;margin-right:auto;"> <input id="red" type="button" value="red"> </button>
 
-      function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                //DO DRAWING IN HERE
+<button type="button" style="background-color:blue;margin-left:auto;margin-right:auto;"> <input id="blue" type="button" value="blue"> </button>
+
+
+
+<input id="eraser" type="button" value="eraser">
+
+<label for="fader">Pen Size</label>
+<input type="range" min="1" max="10" value="5" id="fader" step=".5" oninput="outputUpdate(value)">
+<output for="fader" id="size">5</output>
+<br><br>
+
+
+
+
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;">
+</canvas>
+<br> <input id="clear" type="button" value="clear">
+
+
+
+
+<script>
+
+
+
+
+
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+    context.fillStyle="#000000";
+    var currColor = "black"
+    var pSize = 5;
+    var delay = 0;
+    var mouseIsDown = false;
+    var xcache = [];
+    var ycache = [];
+    var colorcache = [];
+    var sizecache = [];
+
+    $('#blue').click(function(){context.fillStyle="#0000ff"; currColor = "blue"})
+    $('#red').click(function(){context.fillStyle="#FF0000"; currColor = "red"})
+    $('#eraser').click(function(){context.fillStyle="#ffffff"; currColor = "white"})
+
+
+    function outputUpdate(vol) {
+      document.querySelector('#size').value = vol;
+      pSize = vol; 
+    }
+
+
+    function displayData(xvals, yvals, color, size){
+        delay++;
+        var len = xvals.length;
+        if(delay%1 == 0){
+          delay = 0;
+        for(var i = 0; i < len; i++){
+         
+          Color = color[i]
+          Size = size[i]
+          context.fillRect(xvals[i], yvals[i], Size, Size);
+
+          switch(Color) {
+              case "black":
+                 context.fillStyle="#000000";
+                 context.fillRect(xvals[i], yvals[i], Size, Size);
+                 break;
+              case "blue":
+                 context.fillStyle="#0000ff";
+                 context.fillRect(xvals[i], yvals[i], Size, Size);
+                 break;
+              case "red":
+                 context.fillStyle="#FF0000";
+                 context.fillRect(xvals[i], yvals[i], Size, Size);
+                 break;
+              default:
+                 console.log("DEFAULT");
+
+               }
+
         }
-        resizeCanvas();
+  }
+}
 
-      function getMousePos(canvas, evt) {
+  function displayCache(){
+      xvals = xcache
+      yvals = ycache
+      color = colorcache
+      size = sizecache
+      var len = xvals.length;
+      for(var i = 0; i < len; i++){
+       
+        Color = color[i]
+        Size = size[i]
+        context.fillRect(xvals[i], yvals[i], Size, Size);
+
+        switch(Color) {
+            case "black":
+               context.fillStyle="#000000";
+               context.fillRect(xvals[i], yvals[i], Size, Size);
+               break;
+            case "blue":
+               context.fillStyle="#0000ff";
+               context.fillRect(xvals[i], yvals[i], Size, Size);
+               break;
+            case "red":
+               context.fillStyle="#FF0000";
+               context.fillRect(xvals[i], yvals[i], Size, Size);
+               break;
+            default:
+               console.log("DEFAULT");
+
+             }
+
+      }
+    }
+
+
+  function sendData(xarr, yarr, colorarr, sizearr){
+    console.log("Sending...");
+    console.log(xarr);
+      $.getJSON("/coords", {
+            xarr: JSON.stringify(xarr),
+            yarr: JSON.stringify(yarr),
+            colorarr: JSON.stringify(colorarr),
+            sizearr: JSON.stringify(sizearr)
+          }, function(data) {
+
+            //RESPONSE FROM AJAX
+            data.result = JSON.parse(data.result);
+            displayData(data.result['x'], data.result['y'],data.result['color'], data.result['size']);
+          });
+  }
+
+    function getMousePos(canvas, evt) {
+
         var rect = canvas.getBoundingClientRect();
-        return {
-          x: evt.clientX - rect.left,
-          y: evt.clientY - rect.top
-        };
+        if(mouseIsDown){
+          colorcache.push(currColor);
+          sizecache.push(pSize);
+          xcache.push(evt.clientX - rect.left);
+          ycache.push(evt.clientY - rect.top);
+        }
+
       }
 
-      function displayData(data){
-        // context.fillStyle = 
-        for(var i = 0; i < data.length; i++){
-          var currCoord = data[i]
-          context.fillRect(currCoord[0], currCoord[1], 5, 5);
-        }
-      }
+
+
+       $('#clear').click(function(){
+
+        var x  = $('#x').val();
+        var y  = $('#y').val();
+
+        $.getJSON('/clear', {
+            x: x,
+            y: y
+          }, function(data) {
+            //RESPONSE FROM AJAX
+            data.result = JSON.parse(data.result);
+            console.log(data.result)
+
+
+          });
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+      });
+
       
-      canvas.addEventListener("mousedown", function(evt){
-        mouseIsDown = true;
+      canvas.addEventListener('mousemove', function(evt){ 
+        var mousePos = getMousePos(canvas, evt);
+        displayCache();
       }, false);
-      canvas.addEventListener("mouseup", function(evt){
+
+      canvas.addEventListener('mousedown', function(evt){ 
+        mouseIsDown = true;
+      }, false);    
+
+      canvas.addEventListener('mouseup', function(evt){ 
         mouseIsDown = false;
       }, false);
 
-      canvas.addEventListener('mousemove', function(evt) {
-        var mousePos = getMousePos(canvas, evt);
-
-        if(mouseIsDown){
-          console.log(mousePos);
-          $.getJSON('/update', {
-            x: mousePos.x,
-            y: mousePos.y
-          }, function(data) {
-            //RESPONSE FROM AJAX
-            displayData(data.result);
-          });
-        }
-      },false);
-
       window.setInterval(function(){
-        $.getJSON('/get', {}, function(data) {
-            //RESPONSE FROM AJAX
-            displayData(data.result);
-          });
-      }, 500);
-    </script>
-  </body>
-</html>
+        sendData(xcache, ycache, colorcache, sizecache);
+        xcache = [];
+        ycache = [];
+        colorcache = [];
+        sizecache = [];
+      }, 3000);
+
+</script>
+
+
+
+
+
