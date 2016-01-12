@@ -92,7 +92,6 @@
     context.fillStyle="#000000";
     var currColor = "black"
     var pSize = 10;
-    var delay = 0;
     var mouseIsDown = false;
     var xcache = [];
     var ycache = [];
@@ -119,10 +118,7 @@
 
 
     function displayData(xvals, yvals, color, size){
-        delay++;
         var len = xvals.length;
-        if(delay%1 == 0){
-          delay = 0;
         for(var i = 0; i < len; i++){
          
           Color = color[i]
@@ -148,7 +144,6 @@
 
         }
   }
-}
 
   function displayCache(){
       xvals = xcache

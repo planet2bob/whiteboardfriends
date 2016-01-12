@@ -30,6 +30,7 @@ def helloname():
 def clear():
 
     currJsonText = open('data.json', 'r').read()
+    toSend = currJsonText
     currJsonData = json.loads(currJsonText)
     currJsonData['x'] = []
     currJsonData['y'] = []
@@ -37,7 +38,7 @@ def clear():
     currJsonData['color'] = []
     open('data.json', 'w').write(json.dumps(currJsonData))
 
-    return jsonify(result=open('data.json', 'r').read())
+    return jsonify(result=currJsonText)
 
 
 if __name__ == "__main__":
