@@ -12,15 +12,15 @@ def helloname():
 
     x = json.loads(request.values.get("xarr", ""))
     y = json.loads(request.values.get("yarr", ""))
-    color = json.loads(request.values.get("colorarr", ""))
-    size = json.loads(request.values.get("sizearr", ""))
+    # color = json.loads(request.values.get("colorarr", ""))
+    # size = json.loads(request.values.get("sizearr", ""))
 
     currJsonText = open('data.json', 'r').read()
     currJsonData = json.loads(currJsonText)
     currJsonData['x'].extend(x)
     currJsonData['y'].extend(y)
-    currJsonData['color'].extend(color)
-    currJsonData['size'].extend(size)
+    # currJsonData['color'].extend(color)
+    # currJsonData['size'].extend(size)
     
     open('data.json', 'w').write(json.dumps(currJsonData))
 

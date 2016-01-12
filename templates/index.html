@@ -121,8 +121,10 @@
         var len = xvals.length;
         for(var i = 0; i < len; i++){
          
-          Color = color[i]
-          Size = size[i]
+          // Color = color[i]
+          Size = 5
+          context.fillStyle="#000000";
+          context.fillRect(xvals[i], yvals[i], Size, Size);
 
           switch(Color) {
               case "black":
@@ -185,7 +187,7 @@
       $.getJSON("/coords", {
             xarr: JSON.stringify(xarr),
             yarr: JSON.stringify(yarr),
-            colorarr: JSON.stringify(colorarr),
+            // colorarr: JSON.stringify(colorarr),
             sizearr: JSON.stringify(sizearr)
           }, function(data) {
 
