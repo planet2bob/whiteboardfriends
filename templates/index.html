@@ -68,8 +68,8 @@
 <input id="eraser" type="button" value="eraser">
 
 <label for="fader">Pen Size</label>
-<input type="range" min="1" max="10" value="5" id="fader" step=".5" oninput="outputUpdate(value)">
-<output for="fader" id="size">5</output>
+<input type="range" min="5" max="20" value="10" id="fader" step=".5" oninput="outputUpdate(value)">
+<output for="fader" id="size">10</output>
 <input id="clear" type="button" value="clear">
 <br><br>
 
@@ -91,7 +91,7 @@
     var context = canvas.getContext('2d');
     context.fillStyle="#000000";
     var currColor = "black"
-    var pSize = 5;
+    var pSize = 10;
     var delay = 0;
     var mouseIsDown = false;
     var xcache = [];
@@ -212,8 +212,8 @@
     function getMousePos(canvas, evt) {
 
         var rect = canvas.getBoundingClientRect();
-        var x = Math.floor((evt.clientX - rect.left)/5)*5
-        var y = Math.floor((evt.clientY - rect.top)/5)*5
+        var x = Math.floor((evt.clientX - rect.left)/10)*10
+        var y = Math.floor((evt.clientY - rect.top)/10)*10
 
         if(mouseIsDown && !pixelDrawn(x, y, currColor, pSize)){
           colorcache.push(currColor);
