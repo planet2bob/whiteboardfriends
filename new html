@@ -1,0 +1,323 @@
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  
+    <style>
+      .redButton {
+      background-color:#ef261b;
+      -moz-border-radius:28px;
+      -webkit-border-radius:28px;
+      border-radius:28px;
+      border:1px solid #5c585c;
+      display:inline-block;
+      cursor:pointer;
+      color:#ffffff;
+      font-family:Trebuchet MS;
+      font-size:17px;
+      padding:12px 8px;
+      text-decoration:none;
+    }
+    .redButton:hover {
+      background-color:#E89294;
+    }
+    .redButton:active {
+      position:relative;
+      top:1px;
+    }
+
+		.blueButton {
+	  background-color:#00a6ed;
+	  -moz-border-radius:28px;
+	  -webkit-border-radius:28px;
+	  border-radius:28px;
+	  border:1px solid #5c585c;
+	  display:inline-block;
+	  cursor:pointer;
+	  color:#ffffff;
+	  font-family:Trebuchet MS;
+	  font-size:17px;
+	  padding:12px 5px;
+	  text-decoration:none;
+	}
+	.blueButton:hover {
+	  background-color:#c0e1ed;
+	}
+	.blueButton:active {
+	  position:relative;
+	  top:1px;
+	}
+	
+		.blackButton {
+	  background-color:#5D5D5D;
+	  -moz-border-radius:28px;
+	  -webkit-border-radius:28px;
+	  border-radius:28px;
+	  border:1px solid #5c585c;
+	  display:inline-block;
+	  cursor:pointer;
+	  color:#ffffff;
+	  font-family:Trebuchet MS;
+	  font-size:17px;
+	  padding:12px 5px;
+	  text-decoration:none;
+	}
+	.blackButton:hover {
+	  background-color:#979797;
+	}
+	.blackButton:active {
+	  position:relative;
+	  top:1px;
+	}
+
+		.whiteButton {
+	  background-color:#FFFFFF;
+	  -moz-border-radius:28px;
+	  -webkit-border-radius:28px;
+	  border-radius:28px;
+	  border:1px solid #FFFFFF;
+	  display:inline-block;
+	  cursor:pointer;
+	  color:#000000;
+	  font-family:Trebuchet MS;
+	  font-size:17px;
+	  padding:12px 5px;
+	  text-decoration:none;
+	}
+	.whiteButton:hover {
+	  background-color:#FFFFFF;
+	}
+	.whiteButton:active {
+	  position:relative;
+	  top:1px;
+	}	
+
+    </style>
+    
+
+</head>
+
+<h1>Whiteboard Friends</h1>
+
+<!--
+<input id="x" type="text" placeholder="x">
+<input id="y" type="text" placeholder="y">
+<input id ="submit" type="button" value="submit">
+<br><br>
+-->
+
+<a href="#" class="redButton" id="red" type="button" value="red">Red</a>
+<a href="#" class="blueButton" id="blue" type="button" value="blue">Blue</a>
+<a href="#" class="blackButton" id="black" type="button" value="blue">Black</a>
+<a href="#" class="whiteButton" id="white" type="button" value="white">White</a>
+
+<label for="fader">Pen Size</label>
+<input type="range" min="5" max="20" value="10" id="fader" step=".5" oninput="outputUpdate(value)">
+<output for="fader" id="size">10</output>
+<input id="clear" type="button" value="clear">
+<br><br>
+
+
+
+
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid #000000;">
+</canvas>
+
+
+
+<script>
+
+
+
+
+
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+    context.fillStyle="#000000";
+    var currColor = "black"
+    var pSize = 10;
+    var delay = 0;
+    var mouseIsDown = false;
+    var xcache = [];
+    var ycache = [];
+    var colorcache = [];
+    var sizecache = [];
+
+    $('#blue').click(function(){context.fillStyle="#0000ff"; currColor = "blue"})
+    $('#red').click(function(){context.fillStyle="#FF0000"; currColor = "red"})
+	$('#black').click(function(){context.fillStyle="#000000"; currColor = "black"})
+    $('#white').click(function(){context.fillStyle="#ffffff"; currColor = "white"})
+
+
+    function outputUpdate(vol) {
+      document.querySelector('#size').value = vol;
+      pSize = vol; 
+    }
+
+    function resizeCanvas() {
+          var rect = canvas.getBoundingClientRect();
+          canvas.width = window.innerWidth*.98;
+          canvas.height = window.innerHeight*.99 - rect.top;
+          //DO DRAWING IN HERE
+    }
+    resizeCanvas();
+
+
+    function displayData(xvals, yvals, color, size){
+        delay++;
+        var len = xvals.length;
+        if(delay%1 == 0){
+          delay = 0;
+        for(var i = 0; i < len; i++){
+         
+          Color = color[i]
+          Size = size[i]
+
+          switch(Color) {
+              case "black":
+                 context.fillStyle="#000000";
+                 context.fillRect(xvals[i], yvals[i], Size, Size);
+                 break;
+              case "blue":
+                 context.fillStyle="#0000ff";
+                 context.fillRect(xvals[i], yvals[i], Size, Size);
+                 break;
+              case "red":
+                 context.fillStyle="#FF0000";
+                 context.fillRect(xvals[i], yvals[i], Size, Size);
+                 break;
+			  case "white":
+                 context.fillStyle="#FFFFFF";
+                 context.fillRect(xvals[i], yvals[i], Size, Size);
+                 break;
+              default:
+                 console.log("DEFAULT");
+
+               }
+
+        }
+  }
+}
+
+  function displayCache(){
+      xvals = xcache
+      yvals = ycache
+      color = colorcache
+      size = sizecache
+      var len = xvals.length;
+      for(var i = 0; i < len; i++){
+       
+        Color = color[i]
+        Size = size[i]
+        context.fillRect(xvals[i], yvals[i], Size, Size);
+
+        switch(Color) {
+            case "black":
+               context.fillStyle="#000000";
+               context.fillRect(xvals[i], yvals[i], Size, Size);
+               break;
+            case "blue":
+               context.fillStyle="#0000ff";
+               context.fillRect(xvals[i], yvals[i], Size, Size);
+               break;
+            case "red":
+               context.fillStyle="#FF0000";
+               context.fillRect(xvals[i], yvals[i], Size, Size);
+               break;
+			case "white":
+			   context.fillStyle="#FFFFFF";
+               context.fillRect(xvals[i], yvals[i], Size, Size);
+               break;
+            default:
+               console.log("DEFAULT");
+
+             }
+
+      }
+    }
+
+
+  function sendData(xarr, yarr, colorarr, sizearr){
+    console.log("Sending...");
+    console.log(xarr);
+      $.getJSON("/coords", {
+            xarr: JSON.stringify(xarr),
+            yarr: JSON.stringify(yarr),
+            colorarr: JSON.stringify(colorarr),
+            sizearr: JSON.stringify(sizearr)
+          }, function(data) {
+
+            //RESPONSE FROM AJAX
+            data.result = JSON.parse(data.result);
+            displayData(data.result['x'], data.result['y'],data.result['color'], data.result['size']);
+          });
+  }
+
+    function pixelDrawn(x, y, c, s){
+      for(var i = 0; i < xcache.length; i++){
+        if(xcache[i] == x && ycache[i] == y && colorcache[i] == c && sizecache[i] == s){
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function getMousePos(canvas, evt) {
+
+        var rect = canvas.getBoundingClientRect();
+        var x = Math.floor((evt.clientX - rect.left)/10)*10
+        var y = Math.floor((evt.clientY - rect.top)/10)*10
+
+        if(mouseIsDown && !pixelDrawn(x, y, currColor, pSize)){
+          colorcache.push(currColor);
+          sizecache.push(pSize);
+          xcache.push(x);
+          ycache.push(y);
+        }
+
+      }
+
+
+
+       $('#clear').click(function(){
+
+        var x  = $('#x').val();
+        var y  = $('#y').val();
+
+        $.getJSON('/clear', {
+            x: x,
+            y: y
+          }, function(data) {
+            //RESPONSE FROM AJAX
+            data.result = JSON.parse(data.result);
+            console.log(data.result)
+
+
+          });
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+      });
+
+      
+      canvas.addEventListener('mousemove', function(evt){ 
+        var mousePos = getMousePos(canvas, evt);
+        displayCache();
+      }, false);
+
+      canvas.addEventListener('mousedown', function(evt){ 
+        mouseIsDown = true;
+      }, false);    
+
+      canvas.addEventListener('mouseup', function(evt){ 
+        mouseIsDown = false;
+        sendData(xcache, ycache, colorcache, sizecache);
+        xcache = [];
+        ycache = [];
+        colorcache = [];
+        sizecache = [];
+      }, false);
+      window.addEventListener('resize', resizeCanvas, false);
+      window.setInterval(function(){
+        sendData(xcache, ycache, colorcache, sizecache);
+      }, 100);
+      // sendData(xcache, ycache, colorcache, sizecache);
+
+</script>
